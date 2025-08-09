@@ -1,34 +1,122 @@
-# Stopwatch Web Application - SkillCraft Task 02
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch with Milliseconds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-## 📌 Project Overview
-This is a *Stopwatch Web Application* built as part of the *SkillCraft Technology Internship - Task 02*.  
-It is a fully functional stopwatch that allows users to:
-- Start the timer
-- Pause the timer
-- Reset to 00:00:00
-- Record Lap times
+        h1 {
+            margin-bottom: 20px;
+        }
 
----
+        .stopwatch {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
 
-## 🛠 Technologies Used
-- *HTML* – Structure of the application
-- *CSS* – Styling and layout
-- *JavaScript* – Stopwatch logic and interactions
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
 
----
+        .start { background: green; color: white; }
+        .pause { background: orange; color: white; }
+        .reset { background: red; color: white; }
+        .lap { background: blue; color: white; }
 
-## 📸 Screenshot
-(You can add a screenshot here once hosted)
+        ul {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
 
----
+        li {
+            background: #1e1e1e;
+            padding: 5px;
+            margin: 3px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Stopwatch</h1>
+    <div class="stopwatch" id="display">00:00:00.00</div>
+    <div>
+        <button class="start" onclick="start()">Start</button>
+        <button class="pause" onclick="pause()">Pause</button>
+        <button class="reset" onclick="reset()">Reset</button>
+        <button class="lap" onclick="lap()">Lap</button>
+    </div>
+    <ul id="laps"></ul>
 
-## 🚀 How to Run
-1. Download the repository or clone it
-2. Open index.html in any browser
+    <script>
+        let timer;
+        let milliseconds = 0;
+        let running = false;
 
----
+        function updateDisplay() {
+            let hrs = Math.floor(milliseconds / 3600000);
+            let mins = Math.floor((milliseconds % 3600000) / 60000);
+            let secs = Math.floor((milliseconds % 60000) / 1000);
+            let ms = Math.floor((milliseconds % 1000) / 10);
 
-## 🌐 Live Demo
-Hosted on *GitHub Pages*: [Your Live Link Here]
+            document.getElementById("display").textContent =
+                (hrs < 10 ? "0" + hrs : hrs) + ":" +
+                (mins < 10 ? "0" + mins : mins) + ":" +
+                (secs < 10 ? "0" + secs : secs) + "." +
+                (ms < 10 ? "0" + ms : ms);
+        }
 
----
+        function start() {
+            if (!running) {
+                running = true;
+                timer = setInterval(() => {
+                    milliseconds += 10;
+                    updateDisplay();
+                }, 10);
+            }
+        }
+
+        function pause() {
+            running = false;
+            clearInterval(timer);
+        }
+
+        function reset() {
+            running = false;
+            clearInterval(timer);
+            milliseconds = 0;
+            updateDisplay();
+            document.getElementById("laps").innerHTML = "";
+        }
+
+        function lap() {
+            if (running) {
+                let lapTime = document.getElementById("display").textContent;
+                let li = document.createElement("li");
+                li.textContent = "Lap: " + lapTime;
+                document.getElementById("laps").appendChild(li);
+            }
+        }
+
+        updateDisplay(); // initialize display
+    </script>
+</body>
+</html>
